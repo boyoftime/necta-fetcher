@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Necta-Fetcher Developer Guide (Dark Theme)</title>
+    <!-- Google Fonts: Roboto Mono for code, Open Sans for text -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Prism.js CSS (Okaidia theme for dark mode) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <!-- Font Awesome for copy icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        :root {
+            --bg-color: #1a1a1a; /* Very dark gray, almost black */
+            --text-color: #e0e0e0; /* Light gray for text */
+            --primary-color: #00aaff; /* Bright blue for accents */
+            --secondary-color: #282c34; /* Slightly lighter dark for containers */
+            --border-color: #444;
+            --code-bg: #212121; /* Darker than secondary for code blocks */
+            --code-text: #d4d4d4;
+            --link-color: #61dafb; /* Light blue for links */
+            --success-bg: #28a745;
+            --warning-bg: #ffc107;
+            --error-bg: #dc3545;
+            --info-bg: #17a2b8;
+            --font-body: 'Open Sans', sans-serif;
+            --font-code: 'Roboto Mono', monospace;
+        }
+
+        body {
+            font-family: var(--font-body);
+            line-height: 1.8;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: 17px; /* Slightly larger base font */
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, var(--primary-color) 0%, #007acc 100%);
+            color: white;
+            padding: 25px 0;
+            text-align: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+            border-bottom: 3px solid #0056b3;
+        }
+        .navbar h1 {
+            margin: 0;
+            font-size: 3em;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .navbar .tagline {
+            font-size: 1.3em;
+            margin-top: 8px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 35px;
+            background-color: var(--secondary-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 12px;
+            margin-top: 50px;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+        h2:first-of-type {
+            margin-top: 0;
+        }
+        h3 {
+            color: var(--link-color);
+            margin-top: 35px;
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+        h4 {
+            color: #82aaff; /* Lighter variant of primary */
+            margin-top: 30px;
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        p, li {
+            margin-bottom: 18px;
+            font-size: 1.1em;
+        }
+        ul {
+            padding-left: 25px;
+        }
+        li::marker {
+            color: var(--primary-color);
+        }
+
+        code.inline-code {
+            background-color: var(--code-bg);
+            color: #ffcc80; /* Amber/Orange for inline code */
+            padding: 0.25em 0.5em;
+            margin: 0 0.1em;
+            font-size: 90%;
+            border-radius: 4px;
+            font-family: var(--font-code);
+            border: 1px solid #333;
+        }
+
+        .code-block-wrapper {
+            position: relative;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        pre {
+            background-color: var(--code-bg) !important; /* Important to override Prism */
+            color: var(--code-text) !important;
+            padding: 20px;
+            padding-top: 45px; /* Space for copy button */
+            border-radius: 8px;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            font-family: var(--font-code);
+            font-size: 0.98em;
+            line-height: 1.6;
+        }
+        pre code.language-python, pre code.language-bash, pre code.language-json {
+            background-color: transparent !important;
+            padding: 0 !important;
+            color: inherit !important;
+            font-size: inherit !important;
+            text-shadow: none !important; /* Remove Prism's default text shadow */
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #4a4a4a;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 6px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-family: var(--font-body);
+            transition: background-color 0.2s ease;
+        }
+        .copy-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .copy-btn i {
+            margin-right: 5px;
+        }
+
+        .alert-box {
+            padding: 20px;
+            margin-top: 25px;
+            margin-bottom: 25px;
+            border-left: 6px solid;
+            border-radius: 5px;
+            color: white; /* General text for alerts */
+        }
+        .alert-box strong {
+            font-weight: 700;
+        }
+        .alert-important { /* Yellow */
+            background-color: rgba(255, 193, 7, 0.15);
+            border-color: #ffc107;
+            color: #ffc107;
+        }
+        .alert-best-practice { /* Blue */
+            background-color: rgba(0, 123, 255, 0.1);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+         .alert-api-detail { /* Cyan */
+            background-color: rgba(23, 162, 184, 0.1);
+            border-color: var(--info-bg);
+            color: var(--info-bg);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            text-align: left;
+        }
+        th {
+            background-color: #333a47; /* Darker header for table */
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        td {
+            background-color: var(--secondary-color);
+        }
+        tr:nth-child(even) td {
+            background-color: #2c303a; /* Slightly different for even rows */
+        }
+
+        .version-note {
+            font-style: italic;
+            color: #aaa;
+            display: block;
+            margin-top: 8px;
+            font-size: 0.9em;
+        }
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px;
+            background-color: #111;
+            color: #aaa;
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Necta-Fetcher</h1>
+        <p class="tagline">Your Pythonic Gateway to NECTA Student Results</p>
+        <p style="font-size: 0.9em; opacity: 0.8;">Developer: Someless Ado</p>
+    </div>
+
+    <div class="container">
+        <h2>Introduction & Purpose</h2>
+        <p>
+            Welcome, developer! This is the definitive guide to the <code class="inline-code">necta-fetcher</code> Python package, expertly crafted by Someless Ado. This library is your key to unlocking programmatic access to student examination results from the NECTA (National Examinations Council of Tanzania) portal, currently accessible via <a href="https://ajira.zimamoto.go.tz" target="_blank">https://ajira.zimamoto.go.tz</a>.
+        </p>
+        <p>
+            <code class="inline-code">necta-fetcher</code> is designed to shield you from the intricate details of web scraping, such as managing HTTP sessions, handling CSRF (Cross-Site Request Forgery) tokens, and making direct API calls. This allows you to seamlessly integrate NECTA results into your applications, data analysis pipelines, or any other Python-based projects.
+        </p>
+        <div class="alert-box alert-important">
+            <strong>Critical Considerations & Disclaimer:</strong>
+            <ul>
+                <li><strong>Dynamic Web Environment:</strong> The NECTA portal's underlying HTML structure or API endpoints may be updated by its administrators without prior notice. Such changes could impact the functionality of this library. While this package aims for robustness, adaptability to all future portal changes cannot be guaranteed.</li>
+                <li><strong>Terms of Service:</strong> As a user of this library, you are solely responsible for adhering to the Terms of Service stipulated by the NECTA portal and respecting any data usage policies.</li>
+                <li><strong>Responsible Usage:</strong> This library interacts with a live, operational web service. It is imperative to use it responsibly to prevent imposing an excessive load on the NECTA portal's servers. Avoid making an overly high volume of requests in short periods.</li>
+                <li><strong>Credential Management Note:</strong> The initial version of this package (v0.1.0) utilizes an internally managed set of credentials for its operations. For production systems or scenarios requiring unique authentication, please ensure you are using a version of the library that explicitly supports secure, user-provided credential input.</li>
+            </ul>
+        </div>
+
+        <h2>Chapter 1: Installation & Setup</h2>
+        <p>
+            Getting <code class="inline-code">necta-fetcher</code> up and running in your Python environment is a simple process facilitated by <code class="inline-code">pip</code>, Python's standard package installer.
+        </p>
+
+        <h3>1.1 Standard Installation (from PyPI)</h3>
+        <p>
+            Once <code class="inline-code">necta-fetcher</code> is officially published on the Python Package Index (PyPI), you can install it with a single command:
+        </p>
+        <div class="code-block-wrapper">
+            <button class="copy-btn"><i class="fas fa-copy"></i> Copy</button>
+            <pre><code class="language-bash">pip install necta-fetcher</code></pre>
+        </div>
+        <p class="version-note">It's good practice to ensure your pip installer is up-to-date: <code class="inline-code">pip install --upgrade pip</code>.</p>
+
+        <h3>1.2 Installing from a Local Archive</h3>
+        <p>
+            If you have a local source archive file (e.g., <code class="inline-code">necta_fetcher-0.1.0.tar.gz</code>) or a pre-built wheel file (<code class="inline-code">.whl</code>):
+        </p>
+        <div class="code-block-wrapper">
+            <button class="copy-btn"><i class="fas fa-copy"></i> Copy</button>
+            <pre><code class="language-bash"># Example for a .tar.gz source distribution
+pip install /path/to/your/necta_fetcher-0.1.0.tar.gz
+
+# Example for a .whl (wheel) binary distribution
+pip install /path/to/your/necta_fetcher-0.1.0-py3-none-any.whl</code></pre>
+        </div>
+        <p>Remember to replace <code class="inline-code">/path/to/your/</code> with the correct local file path.</p>
+
+        <h3>1.3 For Developers: Installing from Source Code</h3>
+        <p>
+            If you're working with the package's source code (e.g., after cloning its Git repository):
+        </p>
+        <div class="code-block-wrapper">
+            <button class="copy-btn"><i class="fas fa-copy"></i> Copy</button>
+            <pre><code class="language-bash"># Navigate to the project's root directory (where setup.py is)
+cd /path/to/necta_fetcher_project_root
+
+# Standard install from source
+pip install .</code></pre>
+        </div>
+        <p>
+            For active development on the <code class="inline-code">necta-fetcher</code> package itself, an "editable" install is highly beneficial. This creates a link to your source code, meaning any changes you make are immediately usable without reinstalling:
+        </p>
+        <div class="code-block-wrapper">
+            <button class="copy-btn"><i class="fas fa-copy"></i> Copy</button>
+            <pre><code class="language-bash">pip install -e .</code></pre>
+        </div>
+        <div class="alert-box alert-best-practice">
+            <strong>Best Practice: Harnessing Virtual Environments</strong>
+            <p>Isolating your project dependencies is crucial for stable and reproducible Python development. Virtual environments achieve this.
+            <div class="code-block-wrapper">
+                <button class="copy-btn"><i class="fas fa-copy"></i> Copy</button>
+                <pre><code class="language-bash"># Step 1: Create a new virtual environment
+python -m venv my_app_env  # Or python3 -m venv my_app_env
+
+# Step 2: Activate the environment
+# On macOS/Linux:
+source my_app_env/bin/activate
+# On Windows (PowerShell):
+my_app_env\Scripts\Activate.ps1
+# On Windows (Command Prompt):
+my_app_env\Scripts\activate.bat
+
+# Step 3: Install necta-fetcher (and other dependencies) within this isolated environment
+pip install necta-fetcher</code></pre>
+            </div>
+            </p>
+        </div>
+
+        <h2>Chapter 2: The <code class="inline-code">NectaClient</code> - Your Primary Interface</h2>
+        <p>
+            The central nervous system of the <code class="inline-code">necta-fetcher</code> package is the <code class="inline-code">NectaClient</code> class. All interactions with the NECTA portal are orchestrated through an instance of this class.
+        </p>
+
+        <h3>2.1 Client Initialization</h3>
+        <p>
+            To start, import the <code class="inline-code">NectaClient</code> and create an instance.
+        </p>
+        <div class="code-block-wrapper">
+            <button class="copy-btn"><i class="fas fa-copy"></i> Copy</button>
+            <pre><code class="language-python">from necta_fetcher import NectaClient
+
+# Create an instance of the client.
+# For version 0.1.0, authentication details are managed internally by the package.
+# Future versions may support explicit credential passing, e.g.:
+# client = NectaClient(email="your_portal_email@example.com", password="your_portal_password")
+client = NectaClient()</code></pre>
+        </div>
+        <p>
+            You can also customize the <code class="inline-code">User-Agent</code> HTTP header sent by the client. This can be useful for identifying your application if the NECTA portal administrators monitor traffic.
+        </p>
+        <div class="code-block-wrapper">
+            <button class="copy-btn"><i class="fas fa-copy"></i> Copy</button>
+            <pre><code class="language-python">client = NectaClient(user_agent="MyUniversityResultsAggregator/2.1 (admin@myuniversity.edu)")</code></pre>
+        </div>
+        <p class="version-note">
+            <strong>A Note on Authentication (v0.1.0):</strong> The current version (0.1.0) of <code class="inline-code">NectaClient</code> is configured with a specific set of built-in credentials for its operations. For production, enterprise, or any scenario requiring distinct user authentication, ensure you are utilizing a version of the library that explicitly permits secure, user-defined credential input. This documentation will be updated when such features are available.
+        </p>
+
+        <h2>Chapter 3: Retrieving Student Results with <code class="inline-code">fetch_student_results()</code></h2>
+        <p>
+            The flagship method for acquiring examination results is <code class="inline-code">client.fetch_student_results()</code>. This powerful method encapsulates the entire workflow: ensuring the client is logged in (performing login if necessary), refreshing security tokens, making the API request, and processing the response.
+        </p>
+        <h3>3.1 Method Signature Deep Dive:</h3>
+        <div class="code-block-wrapper">
+            <button class="copy-btn"><i class="fas fa-copy"></i> Copy</button>
+            <pre><code class="language-python">NectaClient.fetch_student_results(index_string: str, year: str, exam_level: str) -> dict</code></pre>
+        </div>
+        <h3>3.2 Parameter Breakdown:</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Python Type</th>
+                    <th>Detailed Description</th>
+                    <th>Example Values</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code class="inline-code">index_string</code></td>
+                    <td><code class="inline-code">str</code></td>
+                    <td>
+                        The student's complete and official examination index number. The package is generally case-insensitive to the prefix (S/P), but it's good practice to use uppercase. The format typically follows "S####-####" or "P####-####".
+                    </td>
+                    <td>
+                        <code class="inline-code">"S1143-0115"</code><br>
+                        <code class="inline-code">"P0101-0023"</code>
+                    </td>
+                </tr>
+                <tr>
+                    <td><code class="inline-code">year</code></td>
+                    <td><code class="inline-code">str</code></td>
+                    <td>
+                        The year the student sat for or completed the specified examination level. This must be provided as a string (e.g., "2022", not the integer 2022).
+                    </td>
+                    <td>
+                        <code class="inline-code">"2022"</code><br>
+                        <code class="inline-code">"2018"</code>
+                    </td>
+                </tr>
+                <tr>
+                    <td><code class="inline-code">exam_level</code></td>
+                    <td><code class="inline-code">str</code></td>
+                    <td>
+                        The precise code for the examination level. This value is case-sensitive and must correspond to the identifiers used by the NECTA portal's API. Commonly used levels include:
+                        <ul>
+                            <li><code class="inline-code">"CSEE"</code>: Certificate of Secondary Education Examination (Form IV)</li>
+                            <li><code class="inline-code">"ACSEE"</code>: Advanced Certificate of Secondary Education Examination (Form VI)</li>
+                            <li><code class="inline-code">"PSLE"</code>: Primary School Leaving Examination</li>
+                        </ul>
+                        If you are unsure or dealing with other examination types, you may need to inspect network requests on the NECTA portal or test with known values.
+                    </td>
+                    <td>
+                        <code class="inline-code">"CSEE"</code><br>
+                        <code class="inline-code">"ACSEE"</code>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>3.3 Return Value:</h3>
+        <p>
+            Upon successful execution and finding the student's results, this method returns a Python <code class="inline-code">dict</code> (dictionary). This dictionary is a direct representation of the "data" portion of the JSON response from the NECTA API for the specific student.
+        </p>
+        <h3>3.4 Potential Exceptions:</h3>
+        <p>
+            This method can raise various exceptions derived from <code class="inline-code">NectaError</code> if any part of the process fails. Comprehensive error handling is crucial (see Chapter 4).
+        </p>
+
+        <h3>3.5 In-Depth Usage Example & Output Exploration:</h3>
+        <div class="code-block-wrapper">
+            <button class="copy-btn"><i class="fas fa-copy"></i> Copy</button>
+            <pre><code class="language-python">from necta_fetcher import NectaClient, NectaError, NectaStudentNotFoundError
+import pprint # For visually appealing dictionary printing
+
+# 1. Initialize the NectaClient
+client = NectaClient()
+
+# 2. Define the student query parameters
+student_index = "S1143-0115"  # A known working example from previous tests
+examination_year = "2022"
+examination_level = "CSEE"
+
+print(f"🚀 Initiating NECTA results fetch for:")
+print(f"   Index Number: {student_index}")
+print(f"   Year:         {examination_year}")
+print(f"   Level:        {examination_level}")
+print("-" * 50)
+
+try:
+    # 3. Call the fetch_student_results method
+    # This single call handles login, token management, and the API request.
+    results_dictionary = client.fetch_student_results(
+        index_string=student_index,
+        year=examination_year,
+        exam_level=examination_level
+    )
+
+    # 4. Process the successful response
+    print("\n🎉 Results Retrieved Successfully!\n")
+    
+    print("Raw Python Dictionary Output:")
+    pprint.pprint(results_dictionary, indent=2, width=100) # Pretty print
+
+    # 5. Accessing and displaying specific data fields
+    print("\n--- Detailed Breakdown ---")
+    full_name = f"{results_dictionary.get('first_name', 'N/A')} {results_dictionary.get('middle_name', '')} {results_dictionary.get('last_name', 'N/A')}".strip()
+    print(f"Student Name:   {full_name}")
+    print(f"Index Number:   {results_dictionary.get('index_number', 'N/A')}")
+    print(f"Overall Division: {results_dictionary.get('division', 'N/A')}")
+    print(f"Total Points:   {results_dictionary.get('points', 'N/A')}")
+    
+    # Accessing subjects (which is a list of dictionaries)
+    subjects_list = results_dictionary.get('subjects', [])
+    if subjects_list:
+        print("\n📚 Subject Performance:")
+        for subject_details in subjects_list:
+            subject_name = subject_details.get('subject_name', 'Unknown Subject')
+            grade = subject_details.get('grade', 'N/A')
+            print(f"  - {subject_name:<25}: {grade}") # Formatted output
+    else:
+        print("\nℹ️ No detailed subject information was found in the results.")
+
+except NectaStudentNotFoundError:
+    print(f"\n⚠️ Error: The student with index '{student_index}' for year {examination_year}, level {examination_level} was NOT FOUND on the NECTA portal.")
+    print("   Please verify the accuracy of the entered details or try alternative parameters.")
+except NectaLoginError as e:
+    print(f"\n🔥 Login Error: Authentication with the NECTA portal failed. Details: {e}")
+except NectaTokenError as e:
+    print(f"\n🔑 Token Error: An issue occurred with security (CSRF) token management. Details: {e}")
+except NectaResultError as e:
+    print(f"\n📋 Result Error: A problem occurred while fetching or interpreting the results data. Details: {e}")
+except NectaRequestError as e:
+    print(f"\n🌐 Request Error: A network connectivity or HTTP request issue was encountered. Details: {e}")
+except NectaError as e: # Catch-all for other necta_fetcher specific errors
+    print(f"\n⚙️ Necta-Fetcher Library Error: {e}")
+except Exception as e: # Catch any other unexpected Python errors
+    print(f"\n💥 An Unforeseen System Error Occurred: {e}")
+    import traceback
+    traceback.print_exc() # Provides full traceback for debugging
+finally:
+    print("-" * 50)
+    print("Fetch attempt concluded.")
+</code></pre>
+
+        <h3>3.6 Example Successful JSON Output Structure (Illustrative)</h3>
+        <p>
+            The <code class="inline-code">results_dictionary</code> you receive from a successful call to <code class="inline-code">fetch_student_results()</code> will typically conform to a structure like the following (based on observed API responses). The exact fields and their presence can vary.
+        </p>
+        <div class="code-block-wrapper">
+            <button class="copy-btn"><i class="fas fa-copy"></i> Copy</button>
+            <pre><code class="language-json">{
+  "index_number": "S1143-0115",        // The student's unique index
+  "first_name": "SAMWEL",             // Student's first name
+  "middle_name": "N",                 // Student's middle name (can be empty or N/A)
+  "last_name": "ADONIA",              // Student's last name
+  "sex": "MALE",                      // Gender (may not always be present)
+  "school_name": "UBUNGO ISLAMIC HIGH SCHOOL", // Name of the examination center/school
+  "division": "III",                  // Overall division achieved
+  "points": "24",                     // Total points scored
+  "subjects": [                       // A list of subjects taken
+    {
+      "subject_name": "BASIC MATHEMATICS",
+      "grade": "D"
+    },
+    {
+      "subject_name": "BIOLOGY",
+      "grade": "D"
+    },
+    {
+      "subject_name": "CHEMISTRY",
+      "grade": "C"
+    },
+    {
+      "subject_name": "PHYSICS",
+      "grade": "C"
+    },
+    {
+      "subject_name": "ENGLISH LANGUAGE",
+      "grade": "C"
+    },
+    {
+      "subject_name": "KISWAHILI",
+      "grade": "C"
+    },
+    {
+      "subject_name": "PHYSICAL EDUCATION",
+      "grade": "D"
+    },
+    {
+      "subject_name": "GEOGRAPHY",
+      "grade": "D"
+    },
+    {
+      "subject_name": "HISTORY",
+      "grade": "D"
+    },
+    {
+      "subject_name": "CIVICS",
+      "grade": "F"
+    }
+    // ... other subjects may be listed
+  ],
+  "center_number": "S1143",           // Code for the examination center
+  "exam_type": "CSEE",                // Type of examination (e.g., CSEE, ACSEE)
+  "exam_year": "2022"                 // Year of examination
+  // Other fields like 'status', 'remarks' might also be present.
+}</code></pre>
+        </div>
+        <div class="alert-box alert-api-detail">
+            <strong>Understanding the API Response:</strong> The <code class="inline-code">necta-fetcher</code> package endeavors to return the primary "data" payload from the NECTA API's JSON response with minimal modification. If the NECTA API alters its response schema (e.g., adds new fields, renames existing ones, or changes data types), the dictionary returned by this package will directly reflect those modifications. It is always advisable to inspect the structure of the returned dictionary, especially if you encounter unexpected behavior or missing data after a portal update.
+        </div>
+
+        <h2>Chapter 4: Mastering Error Handling</h2>
+        <p>
+            Effective error handling is paramount for building resilient applications. The <code class="inline-code">necta-fetcher</code> package equips you with a clear hierarchy of custom exceptions, all descending from the base <code class="inline-code">NectaError</code>. This allows for granular control over how your application responds to various failure scenarios.
+        </p>
+        <div class="alert-box alert-api-detail">
+            <h4>Deep Dive into the Exception Hierarchy:</h4>
+            <ul>
+                <li>
+                    <strong><code class="inline-code">NectaError</code></strong> (Base Exception for the package)
+                    <p>Catch this if you want a general handler for any issue originating from <code class="inline-code">necta-fetcher</code>.</p>
+                    <ul>
+                        <li>
+                            <strong><code class="inline-code">NectaLoginError</code></strong>:
+                            <p>Signifies a failure during the authentication process. This can occur due to:
+                                <ul>
+                                    <li>Incorrect credentials (if the package version allows user-input credentials).</li>
+                                    <li>Changes in the NECTA portal's login page HTML structure that prevent the library from finding the CSRF token or form fields.</li>
+                                    <li>Network connectivity issues specifically encountered during the login attempt.</li>
+                                    <li>The portal explicitly rejecting the login attempt (e.g., account locked, invalid credentials).</li>
+                                </ul>
+                            </p>
+                        </li>
+                        <li>
+                            <strong><code class="inline-code">NectaTokenError</code></strong>:
+                            <p>Indicates a problem related to CSRF (Cross-Site Request Forgery) tokens. These tokens are essential for security. Errors can arise if:
+                                <ul>
+                                    <li>The library cannot locate CSRF tokens on the login page or subsequent authenticated pages.</li>
+                                    <li>Extracted tokens are malformed or stale.</li>
+                                    <li>The server rejects a request due to an invalid or missing CSRF token.</li>
+                                </ul>
+                            </p>
+                        </li>
+                        <li>
+                            <strong><code class="inline-code">NectaRequestError</code></strong>:
+                            <p>This exception covers broader network communication problems or unexpected HTTP error responses from the NECTA portal during any non-login/non-result-specific API interaction. Examples include:
+                                <ul>
+                                    <li>DNS resolution failures.</li>
+                                    <li>Connection timeouts or refused connections.</li>
+                                    <li>Receiving HTTP status codes like 500 (Internal Server Error), 403 (Forbidden), 401 (Unauthorized, if not handled by LoginError) from the portal.</li>
+                                    <li>SSL/TLS handshake failures.</li>
+                                </ul>
+                            </p>
+                        </li>
+                        <li>
+                            <strong><code class="inline-code">NectaResultError</code></strong> (Base for issues specific to fetching/processing results)
+                            <p>This is raised for problems occurring after a successful login and token acquisition, specifically during the attempt to fetch or interpret student results.</p>
+                            <ul>
+                                <li>
+                                    <strong><code class="inline-code">NectaStudentNotFoundError</code></strong>:
+                                    <p>A very common and important exception. It is raised specifically when:
+                                        <ul>
+                                            <li>The NECTA API explicitly indicates that no results were found for the given student criteria (index, year, level). This might be via a <code class="inline-code">"success": false</code> response with a "not found" message.</li>
+                                            <li>The API returns a placeholder "N/A" type of response when queried for a specific student, implying that detailed records for that particular student are absent, even if the school/center itself exists.</li>
+                                        </ul>
+                                    </p>
+                                </li>
+                                <li>
+                                    <em>(Other general <code class="inline-code">NectaResultError</code> instances)</em>: These can occur if:
+                                    <ul>
+                                        <li>The API returns a generic error (e.g., <code class="inline-code">"success": false</code> with a non-"not found" error message).</li>
+                                        <li>The response from the results endpoint is not valid JSON and cannot be decoded.</li>
+                                        <li>The JSON response is successfully decoded but does not conform to the expected structure (e.g., missing the <code class="inline-code">"data"</code> field, or the <code class="inline-code">"data"</code> field is not a dictionary when a specific student's results are anticipated).</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <p>
+            By structuring your <code class="inline-code">try...except</code> blocks from most specific to most general (e.g., catching <code class="inline-code">NectaStudentNotFoundError</code> before <code class="inline-code">NectaResultError</code>, and <code class="inline-code">NectaResultError</code> before <code class="inline-code">NectaError</code>), you can tailor your application's response to different failure modes.
+        </p>
+        <div class="code-block-wrapper">
+            <button class="copy-btn"><i class="fas fa-copy"></i> Copy</button>
+            <pre><code class="language-python"># Recommended robust error handling pattern
+client = NectaClient()
+try:
+    student_data = client.fetch_student_results(
+        index_string="SXXXX-YYYY", 
+        year="YYYY", 
+        exam_level="LEVEL"
+    )
+    # ... process student_data ...
+    print("Results processed successfully.")
+
+except NectaStudentNotFoundError as e_student_not_found:
+    print(f"Notification: Results for the specified student were not found. Details: {e_student_not_found}")
+    # Action: Inform the user, log the query, suggest checking inputs.
+
+except NectaLoginError as e_login:
+    print(f"Critical Error: Login to NECTA portal failed. Details: {e_login}")
+    # Action: Alert administrator, check system's network, halt operations requiring login.
+
+except NectaTokenError as e_token:
+    print(f"Warning: CSRF token issue encountered. The portal's security mechanism might have changed. Details: {e_token}")
+    # Action: May require a library update or manual investigation of portal changes.
+
+except NectaResultError as e_result: # Catches other result-related issues not covered by StudentNotFound
+    print(f"Error: There was an issue obtaining or interpreting the results data from NECTA. Details: {e_result}")
+    # Action: Log the error and the problematic query, potentially retry later.
+
+except NectaRequestError as e_request:
+    print(f"Network/Server Error: Communication with the NECTA portal failed. Details: {e_request}")
+    # Action: Check internet connectivity, inform user to try again later.
+
+except NectaError as e_necta_base: # Fallback for any other necta-fetcher specific error
+    print(f"Library Error: A general error occurred within the necta-fetcher package. Details: {e_necta_base}")
+
+except requests.exceptions.RequestException as e_requests_lib: # Catch underlying requests library errors if not wrapped
+    print(f"Low-Level Network Error: An error occurred in the underlying HTTP requests library. Details: {e_requests_lib}")
+    # This is more for debugging library issues.
+
+except Exception as e_unexpected: # General Python errors
+    print(f"System Error: An unexpected error occurred in the application. Details: {e_unexpected}")
+    # Action: Log detailed traceback for developer review.
+    # import traceback
+    # traceback.print_exc()
+</code></pre>
+        </div>
+
+        <h2>Chapter 5: Package Internals & Versioning</h2>
+
+        <h3>5.1 Retrieving Package Version</h3>
+        <p>
+            You can easily ascertain the installed version of the <code class="inline-code">necta-fetcher</code> package within your Python code. This is useful for logging, debugging, or conditional logic based on package capabilities.
+        </p>
+        <div class="code-block-wrapper">
+            <button class="copy-btn"><i class="fas fa-copy"></i> Copy</button>
+            <pre><code class="language-python">import necta_fetcher
+
+current_version = necta_fetcher.__version__
+print(f"You are currently using necta-fetcher version: {current_version}")</code></pre>
+        </div>
+
+        <h3>5.2 A Glimpse into the Workflow</h3>
+        <p>
+            When you invoke <code class="inline-code">client.fetch_student_results()</code>, the <code class="inline-code">NectaClient</code> executes a sequence of operations:
+        </p>
+        <ol>
+            <li><strong>Authentication Check & Login:</strong> If not already authenticated in the current session, it initiates the login procedure. This involves:
+                <ol type="a">
+                    <li>Sending a GET request to the NECTA portal's login page.</li>
+                    <li>Parsing the HTML of the login page to extract a necessary CSRF token (often named <code class="inline-code">_token</code>).</li>
+                    <li>Submitting a POST request to the login URL. This request includes the required credentials (currently internally managed by the package) and the extracted CSRF token.</li>
+                    <li>Validating successful login, typically by inspecting the URL of the page redirected to or specific content elements on that page.</li>
+                </ol>
+            </li>
+            <li><strong>Action-Specific Token Refresh:</strong> Following a successful login, the client visits another authenticated page on the portal (e.g., the main dashboard or homepage). The purpose is to parse this page and secure a CSRF token that is specifically designated for subsequent actions, such as fetching results. This "action token" can differ from the login CSRF token and is often embedded within HTML forms (like a logout form) or specified in <code class="inline-code"><meta></code> tags.</li>
+            <li><strong>Results API Request Formulation & Execution:</strong>
+                <ol type="a">
+                    <li>A JSON payload is meticulously constructed. This payload includes the <code class="inline-code">year</code>, <code class="inline-code">number</code> (which is the full student index string), <code class="inline-code">level</code>, and the freshly acquired action CSRF token.</li>
+                    <li>Appropriate HTTP headers are assembled (e.g., <code class="inline-code">Content-Type: application/x-www-form-urlencoded</code>, <code class="inline-code">X-Requested-With: XMLHttpRequest</code>, and potentially an <code class="inline-code">X-XSRF-TOKEN</code> header if the corresponding cookie is present).</li>
+                    <li>A POST request is dispatched to the designated NECTA results API endpoint (e.g., a URL ending in <code class="inline-code">.../candidates/nectaResult</code>).</li>
+                </ol>
+            </li>
+            <li><strong>API Response Interpretation & Validation:</strong>
+                <ol type="a">
+                    <li>The HTTP status code of the API's response is scrutinized. Any non-2xx status typically indicates an error.</li>
+                    <li>If the request is successful (e.g., status 200 OK), the response body is decoded from JSON format.</li>
+                    <li>The decoded JSON is subjected to basic structural validation (e.g., verifying the presence of a <code class="inline-code">"success": true</code> flag and a <code class="inline-code">"data"</code> field).</li>
+                    <li>A crucial check is performed to ensure the data within the <code class="inline-code">"data"</code> field corresponds to the queried student (by matching index numbers) and is not merely a placeholder (e.g., by checking if <code class="inline-code">first_name</code> is "N/A" and subjects list is empty).</li>
+                    <li>The validated student data dictionary is returned to the caller, or an appropriate exception is raised if any step fails.</li>
+                </ol>
+            </li>
+        </ol>
+        <p>
+            The <code class="inline-code">NectaClient</code> leverages an internal <code class="inline-code">requests.Session()</code> object. This powerful feature from the <code class="inline-code">requests</code> library automatically manages cookies (such as session identifiers and XSRF tokens) across the multiple HTTP requests involved in the workflow, maintaining the authenticated state with the NECTA portal.
+        </p>
+
+        <h2>Chapter 6: Complete Runnable Terminal Example</h2>
+        <p>
+            Here is a self-contained Python script that you can copy, paste, and run directly in your terminal (after installing the <code class="inline-code">necta-fetcher</code> package). This example demonstrates a common use case: prompting the user for student details and displaying the fetched results.
+        </p>
+        <div class="code-block-wrapper">
+            <button class="copy-btn"><i class="fas fa-copy"></i> Copy</button>
+            <pre><code class="language-python">#!/usr/bin/env python3
+# Filename: necta_terminal_app.py
+
+import re
+import pprint
+from necta_fetcher import (
+    NectaClient,
+    __version__ as necta_fetcher_version,
+    NectaError,
+    NectaStudentNotFoundError,
+    NectaLoginError,
+    NectaTokenError,
+    NectaResultError,
+    NectaRequestError
+)
+
+def get_user_input(prompt_message: str, validation_regex: str = None, error_message: str = "Invalid input.") -> str:
+    """Generic function to get and validate user input."""
+    while True:
+        user_val = input(f"{prompt_message}: ").strip()
+        if not validation_regex or re.match(validation_regex, user_val, re.IGNORECASE):
+            return user_val
+        print(f"❌ Error: {error_message}")
+
+def main_terminal_application():
+    """Runs the interactive terminal application to fetch NECTA results."""
+    print("=" * 70)
+    print(f"    NECTA Results Interactive Terminal Client")
+    print(f"    (Powered by necta-fetcher v{necta_fetcher_version} by Someless Ado)")
+    print("=" * 70)
+    print("This tool uses the 'necta-fetcher' package to retrieve student results.")
+    print("Ensure the package is installed (`pip install necta-fetcher`).")
+    print("Note: The current package version uses an internally managed login.\n")
+
+    # Get validated inputs
+    full_index = get_user_input(
+        prompt_message="Enter Student's Full Index Number (e.g., S1234-0001)",
+        validation_regex=r"^[SP]\d{4}-\d{4}$",
+        error_message="Format must be Sxxxx-yyyy or Pxxxx-yyyy (e.g., S1234-0001)."
+    ).upper()
+
+    year = get_user_input(
+        prompt_message="Enter Examination Year (e.g., 2022)",
+        validation_regex=r"^(20[0-2]\d|199\d)$", # Approx 1990-2029
+        error_message="Please enter a 4-digit year (e.g., 2022)."
+    )
+
+    exam_level = get_user_input(
+        prompt_message="Enter Examination Level (CSEE, ACSEE, PSLE)",
+        validation_regex=r"^(CSEE|ACSEE|PSLE)$",
+        error_message="Accepted levels are CSEE, ACSEE, or PSLE."
+    ).upper()
+
+    print("\n" + "~" * 30)
+    print(f"⏳ Preparing to fetch results for:")
+    print(f"  Index: {full_index}")
+    print(f"  Year:  {year}")
+    print(f"  Level: {exam_level}")
+    print("~" * 30 + "\n")
+
+    # Initialize the NectaClient from the installed package
+    client = NectaClient()
+
+    try:
+        # Attempt to fetch the results
+        student_results_data = client.fetch_student_results(
+            index_string=full_index,
+            year=year,
+            exam_level=exam_level
+        )
+        
+        print("\n" + "🎉" * 15 + " RESULTS OBTAINED " + "🎉" * 15)
+        print("Student Details:")
+        pprint.pprint(student_results_data, indent=2, width=100)
+
+    except NectaStudentNotFoundError as e:
+        print(f"\n🚫 STUDENT NOT FOUND: {e}")
+        print("   Please ensure all details (index, year, level) are correct and try again.")
+    except NectaLoginError as e:
+        print(f"\n🔥 LOGIN FAILURE: {e}")
+        print("   Could not authenticate with the NECTA portal. Check network or system configuration.")
+    except NectaTokenError as e:
+        print(f"\n🔑 TOKEN ACQUISITION FAILURE: {e}")
+        print("   There was an issue with security tokens. The portal might have updated its systems.")
+    except NectaResultError as e:
+        print(f"\n📋 RESULTS PROCESSING ERROR: {e}")
+        print("   An error occurred while trying to fetch or understand the results data.")
+    except NectaRequestError as e:
+        print(f"\n🌐 NETWORK/REQUEST ERROR: {e}")
+        print("   A problem occurred during communication with the NECTA portal. Check your internet connection.")
+    except NectaError as e:
+        print(f"\n⚙️ NECTA-FETCHER LIBRARY ERROR: {e}")
+    except Exception as e:
+        print(f"\n💥 UNEXPECTED SYSTEM ERROR: {e}")
+        print("   An unhandled error occurred. Please report this with the details below:")
+        import traceback
+        traceback.print_exc()
+    finally:
+        print("\n" + "=" * 70)
+        print("Query attempt finished. Run the script again to fetch another result.")
+        print("=" * 70)
+
+if __name__ == "__main__":
+    main_terminal_application()
+</code></pre>
+        </div>
+
+        <h2>Chapter 7: Future Directions & Community</h2>
+        <p>
+            The journey of <code class="inline-code">necta-fetcher</code> is ongoing. Someless Ado and potential future contributors envision several enhancements:
+        </p>
+        <ul>
+            <li>**Secure Credential Management:** Implementing robust mechanisms for users to securely provide and manage their own NECTA portal credentials (e.g., via environment variables, configuration files, or direct input).</li>
+            <li>**Batch Operations:** Adding capabilities to fetch results for multiple students or even entire schools/centers, where permissible by API capabilities and terms of service.</li>
+            <li>**Advanced Configuration:** Offering more granular control over network request parameters such as timeouts, retry strategies, and proxy usage.</li>
+            <li>**Asynchronous Operations:** Introducing <code class="inline-code">async/await</code> support for non-blocking API calls, beneficial for applications handling many requests concurrently.</li>
+            <li>**Enhanced Testing Suite:** Expanding unit and integration tests to ensure long-term stability and reliability.</li>
+            <li>**Plugin System:** Potentially a system for extending functionality or adapting to different portal versions.</li>
+        </ul>
+        <p>
+            Feedback, bug reports, feature suggestions, and contributions from the developer community are highly valued. Please refer to the project's official repository (if one is made public) for contribution guidelines or to contact the developer, Someless Ado.
+        </p>
+
+        <div class="alert-box alert-best-practice">
+            <strong>Staying Updated:</strong>
+            <p>The digital landscape, especially web services and APIs, is constantly evolving. To ensure you have the latest features, bug fixes, and adaptations to any NECTA portal changes, periodically update your installed <code class="inline-code">necta-fetcher</code> package:
+            <div class="code-block-wrapper">
+                <button class="copy-btn"><i class="fas fa-copy"></i> Copy</button>
+                <pre><code class="language-bash">pip install --upgrade necta-fetcher</code></pre>
+            </div>
+            </p>
+        </div>
+    </div>
+
+    <footer>
+        <p>Necta-Fetcher Comprehensive Developer Guide © 2025-Present, Someless Ado.</p>
+        <p>Built to simplify access to NECTA results for developers.</p>
+        <p>Call 0674100576</p>
+        <p>For issues or contributions, please refer to the project's primary contact or repository.</p>
+    </footer>
+
+    <!-- Prism.js JS for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            copyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const preElement = button.nextElementSibling; // The <pre> tag
+                    if (preElement && preElement.tagName === 'PRE') {
+                        const codeElement = preElement.querySelector('code');
+                        const textToCopy = codeElement ? codeElement.innerText : preElement.innerText;
+                        
+                        navigator.clipboard.writeText(textToCopy).then(() => {
+                            button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                            setTimeout(() => {
+                                button.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                            }, 2000);
+                        }).catch(err => {
+                            console.error('Failed to copy text: ', err);
+                            button.innerText = 'Error Copying';
+                             setTimeout(() => {
+                                button.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                            }, 2000);
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
