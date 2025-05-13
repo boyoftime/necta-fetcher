@@ -29,32 +29,36 @@
             --font-code: 'Roboto Mono', monospace;
         }
 
+        /* --- BASE STYLES (Mobile First) --- */
         body {
             font-family: var(--font-body);
-            line-height: 1.8;
+            line-height: 1.7; /* Good for readability on all screens */
             margin: 0;
             padding: 0;
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-size: 17px; /* Slightly larger base font */
+            font-size: 16px; /* Base for mobile, will be adjusted for larger screens */
+            -webkit-text-size-adjust: 100%; /* Prevent iOS font scaling */
+            word-wrap: break-word; /* Help prevent overflow */
+            overflow-x: hidden; /* Prevent accidental horizontal scroll on body */
         }
 
         .navbar {
             background: linear-gradient(90deg, var(--primary-color) 0%, #007acc 100%);
             color: white;
-            padding: 25px 0;
+            padding: 20px 5%; /* Use percentage for horizontal padding */
             text-align: center;
             box-shadow: 0 3px 6px rgba(0,0,0,0.2);
             border-bottom: 3px solid #0056b3;
         }
         .navbar h1 {
             margin: 0;
-            font-size: 3em;
+            font-size: 2em; /* Adjusted for mobile */
             font-weight: 600;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
         .navbar .tagline {
-            font-size: 1.3em;
+            font-size: 1.05em; /* Adjusted for mobile */
             margin-top: 8px;
             opacity: 0.9;
             font-weight: 400;
@@ -62,21 +66,21 @@
 
         .container {
             width: 90%;
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 35px;
+            max-width: 1100px; /* Max width for larger screens */
+            margin: 20px auto; /* Reduced top/bottom margin for mobile */
+            padding: 20px;     /* Reduced padding for mobile */
             background-color: var(--secondary-color);
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            border-radius: 10px;
+            border-radius: 8px;
             border: 1px solid var(--border-color);
         }
 
         h2 {
             color: var(--primary-color);
             border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 12px;
-            margin-top: 50px;
-            font-size: 2.2em;
+            padding-bottom: 10px;
+            margin-top: 35px;
+            font-size: 1.7em; /* Adjusted for mobile */
             font-weight: 600;
         }
         h2:first-of-type {
@@ -84,23 +88,23 @@
         }
         h3 {
             color: var(--link-color);
-            margin-top: 35px;
-            font-size: 1.8em;
+            margin-top: 25px;
+            font-size: 1.4em; /* Adjusted for mobile */
             font-weight: 600;
         }
         h4 {
-            color: #82aaff; /* Lighter variant of primary */
-            margin-top: 30px;
-            font-size: 1.5em;
+            color: #82aaff;
+            margin-top: 20px;
+            font-size: 1.2em; /* Adjusted for mobile */
             font-weight: 600;
         }
 
         p, li {
-            margin-bottom: 18px;
-            font-size: 1.1em;
+            margin-bottom: 15px;
+            font-size: 1em; /* Base readability on mobile */
         }
         ul {
-            padding-left: 25px;
+            padding-left: 20px;
         }
         li::marker {
             color: var(--primary-color);
@@ -108,119 +112,141 @@
 
         code.inline-code {
             background-color: var(--code-bg);
-            color: #ffcc80; /* Amber/Orange for inline code */
-            padding: 0.25em 0.5em;
+            color: #ffcc80;
+            padding: 0.2em 0.4em;
             margin: 0 0.1em;
-            font-size: 90%;
-            border-radius: 4px;
+            font-size: 85%;
+            border-radius: 3px;
             font-family: var(--font-code);
             border: 1px solid #333;
+            word-break: break-all; /* Allow long inline code to break */
         }
 
         .code-block-wrapper {
             position: relative;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            margin-top: 15px;
+            margin-bottom: 15px;
         }
         pre {
-            background-color: var(--code-bg) !important; /* Important to override Prism */
+            background-color: var(--code-bg) !important;
             color: var(--code-text) !important;
-            padding: 20px;
-            padding-top: 45px; /* Space for copy button */
-            border-radius: 8px;
-            overflow-x: auto;
+            padding: 15px;
+            padding-top: 40px; /* Space for copy button */
+            border-radius: 6px;
+            overflow-x: auto; /* CRUCIAL for long code lines */
             border: 1px solid var(--border-color);
             font-family: var(--font-code);
-            font-size: 0.98em;
-            line-height: 1.6;
+            font-size: 0.9em; /* Slightly smaller code font on mobile */
+            line-height: 1.5;
         }
-        pre code.language-python, pre code.language-bash, pre code.language-json {
+        pre code { /* Generic code inside pre, for Prism compatibility */
             background-color: transparent !important;
             padding: 0 !important;
             color: inherit !important;
             font-size: inherit !important;
-            text-shadow: none !important; /* Remove Prism's default text shadow */
+            text-shadow: none !important;
+            white-space: pre; /* Preserve whitespace, overflow-x handles wrapping */
         }
         .copy-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 8px;
+            right: 8px;
             background-color: #4a4a4a;
             color: var(--text-color);
             border: 1px solid var(--border-color);
-            padding: 6px 10px;
-            border-radius: 5px;
+            padding: 5px 8px; /* Smaller button for mobile */
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 0.9em;
+            font-size: 0.85em;
             font-family: var(--font-body);
             transition: background-color 0.2s ease;
+            z-index: 10;
         }
         .copy-btn:hover {
             background-color: var(--primary-color);
             color: white;
         }
         .copy-btn i {
-            margin-right: 5px;
+            margin-right: 4px;
         }
 
         .alert-box {
-            padding: 20px;
-            margin-top: 25px;
-            margin-bottom: 25px;
-            border-left: 6px solid;
-            border-radius: 5px;
-            color: white; /* General text for alerts */
+            padding: 15px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid;
+            border-radius: 4px;
+            color: white; /* Will be overridden by specific alert types */
+            font-size: 0.95em; /* Slightly smaller alert text for mobile */
         }
         .alert-box strong {
             font-weight: 700;
         }
-        .alert-important { /* Yellow */
+        .alert-important {
             background-color: rgba(255, 193, 7, 0.15);
             border-color: #ffc107;
             color: #ffc107;
         }
-        .alert-best-practice { /* Blue */
+        .alert-best-practice {
             background-color: rgba(0, 123, 255, 0.1);
             border-color: var(--primary-color);
             color: var(--primary-color);
         }
-         .alert-api-detail { /* Cyan */
+         .alert-api-detail {
             background-color: rgba(23, 162, 184, 0.1);
             border-color: var(--info-bg);
             color: var(--info-bg);
         }
 
         table {
-            width: 100%;
+            width: 100%; /* Make table take full width of its container */
             border-collapse: collapse;
-            margin-top: 25px;
-            margin-bottom: 25px;
+            margin-top: 20px;
+            margin-bottom: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            font-size: 0.85em; /* Smaller table font for mobile */
+            display: block;    /* Allows table to scroll horizontally */
+            overflow-x: auto;  /* Makes table scrollable */
         }
         th, td {
             border: 1px solid var(--border-color);
-            padding: 14px;
+            padding: 8px 10px; /* Reduced padding for mobile */
             text-align: left;
+            white-space: nowrap; /* Prevent text wrapping in cells initially to ensure proper scroll */
         }
         th {
-            background-color: #333a47; /* Darker header for table */
+            background-color: #333a47;
             color: var(--primary-color);
             font-weight: 600;
-            font-size: 1.1em;
+            font-size: 1em; /* Relative to table font-size */
+            position: sticky; /* Make header sticky during horizontal scroll */
+            left: 0;
+            z-index: 1; /* Ensure header is above scrolling content */
         }
+        /* Style for the first column cells to also be sticky */
+        /* td:first-child {
+            background-color: var(--secondary-color);
+            position: sticky;
+            left: 0;
+            z-index: 0;
+        }
+        tr:nth-child(even) td:first-child {
+            background-color: #2c303a;
+        } */
+
         td {
             background-color: var(--secondary-color);
         }
         tr:nth-child(even) td {
-            background-color: #2c303a; /* Slightly different for even rows */
+            background-color: #2c303a;
         }
 
         .version-note {
             font-style: italic;
             color: #aaa;
             display: block;
-            margin-top: 8px;
-            font-size: 0.9em;
+            margin-top: 6px;
+            font-size: 0.85em;
         }
         a {
             color: var(--link-color);
@@ -233,11 +259,105 @@
         }
         footer {
             text-align: center;
-            margin-top: 60px;
-            padding: 30px;
+            margin-top: 40px;
+            padding: 20px 5%; /* Percentage padding */
             background-color: #111;
             color: #aaa;
             border-top: 1px solid var(--border-color);
+            font-size: 0.9em;
+        }
+
+        /* --- MEDIA QUERIES FOR LARGER SCREENS --- */
+
+        /* For tablets and larger phones (e.g., min-width: 600px) */
+        @media (min-width: 600px) {
+            body {
+                font-size: 17px; /* Restore base font size */
+            }
+            .navbar h1 {
+                font-size: 2.5em;
+            }
+            .navbar .tagline {
+                font-size: 1.2em;
+            }
+            .container {
+                padding: 25px;
+                margin: 30px auto;
+            }
+            h2 {
+                font-size: 2em;
+            }
+            h3 {
+                font-size: 1.6em;
+            }
+            h4 {
+                font-size: 1.35em;
+            }
+            p, li {
+                font-size: 1.05em;
+            }
+            pre {
+                font-size: 0.95em; /* Slightly larger code on tablets */
+                padding: 18px;
+                padding-top: 42px;
+            }
+            .copy-btn {
+                padding: 6px 10px;
+                font-size: 0.9em;
+            }
+            table {
+                font-size: 0.9em; /* Slightly larger table on tablets */
+            }
+            th, td {
+                padding: 12px;
+                white-space: normal; /* Allow text wrapping in cells on larger screens */
+            }
+             /* Remove sticky for first column if not desired on larger screens or adjust
+            td:first-child {
+                position: static;
+            } */
+        }
+
+        /* For desktops (e.g., min-width: 992px) */
+        @media (min-width: 992px) {
+            body {
+                font-size: 17px; /* Your original base desktop size */
+            }
+            .navbar h1 {
+                font-size: 3em; /* Original desktop H1 */
+            }
+            .navbar .tagline {
+                font-size: 1.3em; /* Original desktop tagline */
+            }
+            .container {
+                padding: 35px; /* Original desktop padding */
+                margin: 40px auto; /* Original desktop margin */
+            }
+            h2 {
+                font-size: 2.2em; /* Original desktop H2 */
+            }
+            h3 {
+                font-size: 1.8em; /* Original desktop H3 */
+            }
+            h4 {
+                font-size: 1.5em; /* Original desktop H4 */
+            }
+            p, li {
+                font-size: 1.1em; /* Original desktop paragraph */
+            }
+            pre {
+                font-size: 0.98em; /* Original desktop pre */
+                padding: 20px;
+                padding-top: 45px;
+            }
+            table {
+                font-size: 1em; /* Full table font size */
+                display: table; /* Revert to standard table display */
+                overflow-x: visible; /* No need for table scroll on desktop if it fits */
+            }
+            th, td {
+                padding: 14px; /* Original desktop table padding */
+            }
         }
     </style>
 </head>
