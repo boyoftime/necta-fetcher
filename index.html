@@ -359,6 +359,59 @@
                 padding: 14px; /* Original desktop table padding */
             }
         }
+
+        /* --- Glowing Text Styles --- */
+        .glowing-text-call {
+            text-align: center; /* Center the call text if desired */
+            font-size: 1.3em;   /* Make it a bit larger */
+            font-weight: 600;
+            margin-top: 30px;   /* Add some space above it */
+            margin-bottom: 30px;
+            /* The text color will be inherited or can be set here if needed */
+        }
+
+        .glowing-link {
+            color: #ffffff; /* Bright white base for the link text itself */
+            text-decoration: none; /* Remove underline for a cleaner glow */
+            text-shadow:
+                0 0 5px rgba(255, 255, 255, 0.9), /* Bright inner glow (white) */
+                0 0 10px rgba(255, 255, 255, 0.7), /* Softer inner glow (white) */
+                0 0 15px var(--primary-color),     /* Main glow color (your theme's primary blue) */
+                0 0 25px var(--primary-color),     /* Wider, softer main glow */
+                0 0 35px rgba(0, 100, 255, 0.5); /* Fainter, slightly different blue outer halo */
+            transition: text-shadow 0.3s ease-in-out, color 0.3s ease-in-out;
+            animation: pulseGlow 2.5s infinite alternate ease-in-out;
+        }
+
+        .glowing-link:hover {
+            color: var(--link-color); /* Change text color on hover for interactivity */
+            text-shadow:
+                0 0 8px rgba(255, 255, 255, 1),
+                0 0 15px rgba(255, 255, 255, 0.8),
+                0 0 25px var(--primary-color),
+                0 0 35px var(--primary-color),
+                0 0 50px rgba(0, 120, 255, 0.6); /* Intensify glow on hover */
+            animation-play-state: paused; /* Pause pulsing on hover to see static intense glow */
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                text-shadow:
+                    0 0 5px rgba(255, 255, 255, 0.8),
+                    0 0 10px rgba(255, 255, 255, 0.6),
+                    0 0 12px var(--primary-color),
+                    0 0 20px var(--primary-color),
+                    0 0 30px rgba(0, 100, 255, 0.4);
+            }
+            100% {
+                text-shadow:
+                    0 0 7px rgba(255, 255, 255, 0.95),
+                    0 0 14px rgba(255, 255, 255, 0.75),
+                    0 0 18px var(--primary-color),
+                    0 0 28px var(--primary-color),
+                    0 0 40px rgba(0, 110, 255, 0.55);
+            }
+        }
     </style>
 </head>
 <body>
@@ -1013,7 +1066,9 @@ if __name__ == "__main__":
     <footer>
         <p>Necta-Fetcher Comprehensive Developer Guide © 2025-Present, Someless Ado.</p>
         <p>Built to simplify access to NECTA results for developers.</p>
-        <p>Call 0674100576</p>
+        <p class="glowing-text-call">
+        Call <a href="tel:0674100576" class="glowing-link">0674100576</a>
+        </p>
         <p>For issues or contributions, please refer to the project's primary contact or repository.</p>
     </footer>
 
